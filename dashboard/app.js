@@ -147,4 +147,11 @@
   var hash = window.location.hash.replace('#', '');
   if (hash) showDetail(hash);
   else render();
+
+  // A #<slug> link opened while already on the page must open the detail too:
+  // the hash is read on load only, so listen for later hash changes as well.
+  window.addEventListener('hashchange', function () {
+    var h = window.location.hash.replace('#', '');
+    if (h) showDetail(h);
+  });
 })();
