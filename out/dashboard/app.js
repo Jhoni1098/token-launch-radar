@@ -41,6 +41,16 @@
   fillSelect($('cat'), cats);
   fillSelect($('chain'), chains);
 
+  // Deep-linkable state: ?q=..&cat=..&chain=..&sort=..&watch=1, and #<slug> opens a detail view.
+  (function () {
+    var p = new URLSearchParams(window.location.search);
+    if (p.get('q')) { state.q = p.get('q'); $('q').value = state.q; }
+    if (p.get('cat')) { state.cat = p.get('cat'); $('cat').value = state.cat; }
+    if (p.get('chain')) { state.chain = p.get('chain'); $('chain').value = state.chain; }
+    if (p.get('sort') && SORTS[p.get('sort')]) { state.sort = p.get('sort'); $('sort').value = state.sort; }
+    if (p.get('watch') === '1') { state.watch = true; $('watch').checked = true; }
+  })();
+
   var SORTS = {
     rank: function (a, b) { return a.rank - b.rank; },
     implied: function (a, b) { return b.implied_value_usd - a.implied_value_usd; },
@@ -106,7 +116,7 @@
     }).join('');
     $('d-steps').innerHTML = r.farm_steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
     render();
-    $('detail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    $('detail').scrollIntoView({ behavior: 'auto', block: 'start' });
   }
 
   $('rows').addEventListener('click', function (e) {
